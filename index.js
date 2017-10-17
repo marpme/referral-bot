@@ -12,19 +12,11 @@ jf.readFile('./referrals.json').then(referrals => {
 		console.log(`Connected as ${client.user.tag}`)
 		guild = client.guilds.find('id', '348155543199678468')
 		newReferrals = referrals
-		invites = guild.fetchInvites().then(collection =>
-			collection.map(({ code, uses }) => ({
-				[code]: uses,
-			}))
-		)
+		invites = guild.fetchInvites()
 
 		setInterval(() => {
 			console.log('fetch new invites!')
-			invites = guild.fetchInvites().then(collection =>
-				collection.map(({ code, uses }) => ({
-					[code]: uses,
-				}))
-			)
+			invites = guild.fetchInvites()
 		}, 10000)
 	})
 
@@ -56,11 +48,11 @@ jf.readFile('./referrals.json').then(referrals => {
 			guild.fetchInvites(),
 			invites,
 		]).then(([collection, myinvites]) => {
-			const usedInvite = collection
-				.array()
-				.find(
-					(invite, index) => myinvites[index][invite.code] + 1 === invite.uses
-				)
+			const usedInvite = collection.array().find(invite => {
+				const usedinvite = myinvites.find('code', invite.code)
+				const uses = (usedinvite && usedinvite.uses) || 0
+				return uses + 1 === invite.uses
+			})
 
 			let userid = usedInvite && usedInvite.inviter && usedInvite.inviter.id
 
