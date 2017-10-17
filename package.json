@@ -1,0 +1,14 @@
+{
+  "name": "referral-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/marpme/referral-bot.git",
+  "author": "Kyonleague <cryzar95@googlemail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.2.1",
+    "jsonfile": "^4.0.0",
+    "jsonfile-promised": "^0.0.1",
+    "moment": "^2.19.1"
+  }
+}
