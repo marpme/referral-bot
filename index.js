@@ -28,6 +28,29 @@ jf.readFile('./referrals.json').then(referrals => {
 		}, 10000)
 	})
 
+	client.on('message', msg => {
+		if (
+			msg.cleanContent.includes(']referred') &&
+			msg.channel.id == '367768045759758338'
+		) {
+			const members = msg.mentions.members.array()
+			if (members.length === 1) {
+				const member = members[0]
+				const myrefs = newReferrals[String(member.user.id)]
+				if (myrefs) {
+					const listofMembers = myrefs.map(id => `<@${id}>`).join(', ')
+					msg.reply(
+						`members referred: ${myrefs
+							? myrefs.length
+							: 0}\nList: ${listofMembers}`
+					)
+				} else {
+					msg.reply(`no members referred, yet ... :(`)
+				}
+			}
+		}
+	})
+
 	client.on('guildMemberAdd', member => {
 		Promise.all([
 			guild.fetchInvites(),
@@ -44,10 +67,11 @@ jf.readFile('./referrals.json').then(referrals => {
 			const isAlreadyReferred = newReferrals[userid].includes(
 				String(member.user.id)
 			)
+			const isNotHisSelf = member.user.id != userid
 			const isOldEnough =
 				moment().diff(moment(member.user.createdTimestamp), 'days') > 30
 
-			if (!isAlreadyReferred && isOldEnough) {
+			if (!isAlreadyReferred && isOldEnough && isNotHisSelf) {
 				newReferrals = {
 					...newReferrals,
 					[userid]: [...newReferrals[userid], String(member.user.id)],
@@ -64,5 +88,5 @@ jf.readFile('./referrals.json').then(referrals => {
 			}
 		})
 	})
-	client.login('MzY5OTA4OTA0MDcyNzA4MDk4.DMfejA.jAIgRUC1duUMaSiM-XDA6R7i0Wo')
+	client.login('')
 })
